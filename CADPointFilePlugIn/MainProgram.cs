@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.ApplicationServices;
@@ -26,10 +28,17 @@ namespace CrxApp
             using(var reader = new StreamReader("AlisoCreekDownStreamBoundary2020-2.txt"))
             {
                 int lineNumberInFile = 0;
+
+                // Collect the number of rows that passed in the csv file based on the proper format.
                 List<RowDataClass> rowCollection = new List<RowDataClass>();
+
+                // Collect the number of of erros found in the csv file that are not in the proper format.
+                List<Dictionary<string, object>> csvFormatErrorList = new List<Dictionary<string, object>>();
 
                 while (!reader.EndOfStream)
                 {
+                    lineNumberInFile += 1;
+
                     var line = reader.ReadLine();
                     var values = line.Split(',');
 
@@ -38,8 +47,6 @@ namespace CrxApp
                     
                     if(numberOfIndex == 5)
                     {
-                        lineNumberInFile += 1;
-
                         // Determine if the first row are headers 
                         if(lineNumberInFile == 1)
                         {
@@ -68,8 +75,34 @@ namespace CrxApp
                             rowCollection.Add(checkKeyDescription(rowValues));
                         }
                     }
+                    else
+                    {
+                        // CSV file is not in the proper format must be 5 columns : [PointNumber, Easting, Northing, Elevation, Description]
+                        Dictionary<string, object> formatErrorDict = new Dictionary<string, object>();
+                        formatErrorDict.Add("ErrorRow", String.Format("Found error in row number {0}", lineNumberInFile.ToString()));
+                        formatErrorDict.Add("ErrorMsg", "Please make sure the csv file is in the proper format(Point Number, Northing, Easting, Elevation, Description) with no extra commas.\n Example: 1001,6127164.4032,2176455.7698,0.0,BOUNDARY");
+                        csvFormatErrorList.Add(formatErrorDict);
+                    }
                 }
-                System.Console.WriteLine("asdfs");
+
+                // If any error is found do not continue to furthor anlyze the csv file.
+                if (!csvFormatErrorList.Any())
+                {
+                    // Analyze the sequence of the point.
+                    CheckLineCodeMatch(rowCollection, "Figures");
+
+                    using (var writer_1 = File.CreateText("traversedata.json"))
+                    {
+                        string strResultJson = JsonConvert.SerializeObject(rowCollection, Formatting.Indented);
+                        writer_1.WriteLine(strResultJson);
+                    }
+                }
+                else
+                {
+                    Dictionary<string, object> reportResults = new Dictionary<string, object>();
+                    reportResults.Add("ParcelCreator", "Fail");
+                    reportResults.Add("ErrorResult", csvFormatErrorList);
+                }
             }
         }
         public static Dictionary<string, object> checkRowFormat(List<string> listOfValues, int lineNumber)
@@ -217,7 +250,7 @@ namespace CrxApp
                     // Check for Radius
                     if (analyzedDescription["radius"] != "None")
                     {
-                        Match radMatch = Regex.Match(analyzedDescription["radius"], @"\d+\.?\d+?");
+                        Match radMatch = Regex.Match(analyzedDescription["radius"], @"\d+\.?\d+");
 
                         //radMatch.Success? rowData.radius = Convert.ToDouble(radMatch.Value) : rowData.radius = 0;
                         if (radMatch.Success)
@@ -249,10 +282,13 @@ namespace CrxApp
                     }
 
                     // Check if the start point of an arc contins all the data needed to create an arc
-                    if ((bool)rowData.pointCheck == false)
+                    if (rowData.pointCheck is bool)
                     {
-                        errorMsg += " Include both radius and arc direction to the start of the curve in the description.";
-                        errorMsg += "\nExample: BC R10.25 CCW";
+                        if((bool)rowData.pointCheck == false)
+                        {
+                            errorMsg += " Include both radius and arc direction to the start of the curve in the description.";
+                            errorMsg += "\nExample: BC R10.25 CCW";
+                        }
                     }
                     else
                     {
@@ -312,6 +348,117 @@ namespace CrxApp
 
                 return rowData;
             }
+        }
+        // Check if the sequence of LineCode in the description column are correct.
+        private bool CheckRowsLineCodeSeq(List<RowDataClass> rowData)
+        {
+            Dictionary<string, object> sequenceResult = new Dictionary<string, object>();
+
+            // Check if all the row of points passed.
+            bool failedRows = rowData.Where(e => (bool)e.pointCheck == false).ToList().Any();
+            if (!failedRows)
+            {
+                sequenceResult.Add("PointCheckResult", "Pass");
+                sequenceResult.Add("PointCheckResultMsg", "No errors found in row.");
+            }
+            else
+            {
+                sequenceResult.Add("PointCheckResult", "Fail");
+                sequenceResult.Add("PointCheckResultMsg", "Found a failed row in csv file.");
+                
+            }
+
+            // Check if linecode B and E show up the same number of times
+            bool checkNumberOfFigures = CheckLineCodeMatch(rowData, "Figures");
+            if (checkNumberOfFigures)
+            {
+                sequenceResult.Add("FigureCheckResult", "Pass");
+                sequenceResult.Add("FigureCheckResultMsg", "Figures are closed.");
+            }
+            else
+            {
+                sequenceResult.Add("FigureCheckResult", "Fail");
+                sequenceResult.Add("FigureCheckResultMsg", "Figures are not closed.");
+            }
+
+            // Check if BC and EC show up the same number of times
+            bool checkNumberOfCurves = CheckLineCodeMatch(rowData, "Arc");
+            if (checkNumberOfCurves)
+            {
+                sequenceResult.Add("CurveCheckResult", "Pass");
+                sequenceResult.Add("CurveCheckResultMsg", "Start and End Curves created.");
+            }
+            else
+            {
+                sequenceResult.Add("CurveCheckResult", "Fail");
+                sequenceResult.Add("CurveCheckResultMsg", "Cannot create curve; start and end curve is not provided.");
+            }
+
+            // Check if B and E are in sequencial order
+            bool checkFigureSequence = CheckStartEndFigSeq(rowData);
+            return false;
+        }
+        // Check if the linecode for curves, figures, etc... show up evenly.
+        // Figure out a better alternative for this mehtod.(TBD)
+        private static bool CheckLineCodeMatch(List<RowDataClass> rowData, string keyWord)
+        {
+            List<int> countValues = new List<int>();
+
+            if (keyWord == "Figures")
+            {
+                countValues.Add(rowData.FindAll(e => e.startFig == true).Count());
+                countValues.Add(rowData.FindAll(e => e.endFig == true).Count());
+
+                // if all the numbers are the same then the linecode in csv file passed
+                // bool asdf = countValues.Any(x => x != countValues[0]);
+                if (!countValues.Any(x => x != countValues[0]))
+                {
+                    countValues = null;
+                    return true;
+                }
+                else
+                {
+                    countValues = null;
+                    return false;
+                }
+            }
+            else if (keyWord == "Arc")
+            {
+                countValues.Add(rowData.FindAll(e => e.startCurve == true).Count());
+                countValues.Add(rowData.FindAll(e => e.endCurve == true).Count());
+
+                // if all the numbers are the same then the linecode in csv file passed
+                // bool asdf = countValues.Any(x => x != countValues[0]);
+                if (!countValues.Any(x => x != countValues[0]))
+                {
+                    countValues = null;
+                    return true;
+                }
+                else
+                {
+                    countValues = null;
+                    return false;
+                }
+            }
+            else
+            {
+                countValues = null;
+                return false;
+            }
+        }
+
+        // Check if the start and end figure are provided in a sequential order.
+        private static bool CheckStartEndFigSeq(List<RowDataClass> rowData)
+        {
+
+            return false;
+        }
+        
+        // Check if the start and end of the curve are provided in a sequential order.
+        private static bool CheckStartEndCurveSeq()
+        {
+            
+            return false;
         }
     }
 }
