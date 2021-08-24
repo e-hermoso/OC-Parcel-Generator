@@ -16,3 +16,12 @@ C:\Users\erich\source\repos\PointFileToCAD\PointFileToCAD\CADPointFilePlugIn\obj
 C:\Users\erich\source\repos\PointFileToCAD\PointFileToCAD\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.csproj.CopyComplete
 C:\Users\erich\source\repos\PointFileToCAD\PointFileToCAD\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.dll
 C:\Users\erich\source\repos\PointFileToCAD\PointFileToCAD\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.pdb
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\bin\Debug\CADPointFilePlugIn.dll
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\bin\Debug\CADPointFilePlugIn.pdb
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\bin\Debug\Newtonsoft.Json.dll
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\bin\Debug\Newtonsoft.Json.xml
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.csprojAssemblyReference.cache
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.csproj.CoreCompileInputs.cache
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.csproj.CopyComplete
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.dll
+C:\Users\erich\nova-waves\ocpw-survey\parcel-generator\source\crx-plugins\OC-Parcel-Generator\CADPointFilePlugIn\obj\Debug\CADPointFilePlugIn.pdb

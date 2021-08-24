@@ -55,141 +55,8 @@ namespace CrxApp
                                 // Check if each index is in the proper format [int,double,double,double,string]
                                 Dictionary<string, object> rowValues = checkRowFormat(values.ToList(), lineNumberInFile);
 
-                                string errorMsg = "";
-
-                                if (rowValues["FormatCheck"].ToString() == "Pass")
-                                {
-                                    RowDataClass rowData = new RowDataClass();
-                                    rowData.pointNumber = (int)((List<object>)rowValues["FormatResult"])[0];
-                                    rowData.start_x = (double)((List<object>)rowValues["FormatResult"])[1];
-                                    rowData.start_y = (double)((List<object>)rowValues["FormatResult"])[2];
-                                    rowData.start_z = (double)((List<object>)rowValues["FormatResult"])[3];
-
-                                    var descriptionResult = (string)((List<object>)rowValues["FormatResult"])[4];
-
-                                    // Analyze Description and look for key words
-                                    Dictionary<string, string> analyzedDescription = analyzeDescription(descriptionResult);
-
-                                    // Set pointCheck to null.
-                                    rowData.pointCheck = null;
-
-                                    // Check if the start and end of a figure was determined.
-                                    if (analyzedDescription["beginingFig"] != "None")
-                                    {
-                                        rowData.startFig = true;
-                                    }
-                                    else
-                                    {
-                                        rowData.startFig = false;
-                                    }
-
-                                    if (analyzedDescription["endFig"] != "None")
-                                    {
-                                        rowData.endFig = true;
-                                    }
-                                    else
-                                    {
-                                        rowData.endFig = false;
-                                    }
-
-                                    // Check if the point is the start of the curve
-                                    if (analyzedDescription["startCurve"] != "None")
-                                    {
-
-                                        rowData.startCurve = true;
-
-                                        // Check for Radius
-                                        if (analyzedDescription["radius"] != "None")
-                                        {
-                                            Match radMatch = Regex.Match(analyzedDescription["radius"], @"\d+\.?\d+?");
-
-                                            //radMatch.Success? rowData.radius = Convert.ToDouble(radMatch.Value) : rowData.radius = 0;
-                                            if (radMatch.Success)
-                                            {
-                                                rowData.radius = Convert.ToDouble(radMatch.Value);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // Report Error for Radius
-                                            rowData.pointCheck = false;
-                                            errorMsg += "No Radius found.";
-                                        }
-
-                                        // Check for arc direction
-                                        if (analyzedDescription["arcDirection"].Trim() == "CCW")
-                                        {
-                                            rowData.isCounterClockWise = true;
-                                        }
-                                        else if (analyzedDescription["arcDirection"].Trim() == "CW")
-                                        {
-                                            rowData.isCounterClockWise = false;
-                                        }
-                                        else
-                                        {
-                                            // Report Error for arc direction
-                                            rowData.pointCheck = false;
-                                            errorMsg += " No arc direction found.";
-                                        }
-
-                                        // Check if the start point of an arc contins all the data needed to create an arc
-                                        if ((bool)rowData.pointCheck == false)
-                                        {
-                                            errorMsg += " Include both radius and arc direction to the start of the curve in the description.";
-                                            errorMsg += "\nExample: BC R10.25 CCW";
-                                        }
-                                        else
-                                        {
-                                            // Begining of point on curve description passed.
-                                            rowData.pointCheck = true;
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        rowData.startCurve = false;
-                                    }
-
-                                    // Check if the point is the end of the curve
-                                    if (analyzedDescription["endCurve"] != "None")
-                                    {
-                                        // Check end point description does not contain any begining of the point data
-                                        if (!rowData.startCurve)
-                                        {
-                                            // Ending of a point on curve description passed.
-                                            rowData.pointCheck = true;
-                                            rowData.endCurve = true;
-                                        }
-                                        else
-                                        {
-                                            rowData.pointCheck = false;
-                                            rowData.endCurve = false;
-                                            errorMsg += "Cannot contain BC and EC line code to the same point.";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        rowData.endCurve = false;
-                                    }
-
-                                    // If pointCheck is null then no other aditional requirment is needed for description
-                                    if (rowData.pointCheck is null)
-                                    {
-                                        rowData.pointCheck = true;
-                                    }
-
-                                    // Add error message
-                                    rowData.errorMsg = errorMsg;
-
-                                    rowCollection.Add(rowData);
-                                }
-                                else
-                                {
-                                    RowDataClass rowData = new RowDataClass();
-                                    rowData.pointCheck = false;
-
-                                    rowCollection.Add(rowData);
-                                }
+                                // Analyze each index value in description column and store them into a list.
+                                rowCollection.Add(checkKeyDescription(rowValues));
                             }
                         }
                         else
@@ -197,143 +64,8 @@ namespace CrxApp
                             // Check if each index is in the proper format [int,double,double,double,string]
                             Dictionary<string, object> rowValues = checkRowFormat(values.ToList(), lineNumberInFile);
 
-                            string errorMsg = "";
-
-                            if (rowValues["FormatCheck"].ToString() == "Pass")
-                            {
-                                RowDataClass rowData = new RowDataClass();
-                                rowData.pointNumber = (int)((List<object>)rowValues["FormatResult"])[0];
-                                rowData.start_x = (double)((List<object>)rowValues["FormatResult"])[1];
-                                rowData.start_y = (double)((List<object>)rowValues["FormatResult"])[2];
-                                rowData.start_z = (double)((List<object>)rowValues["FormatResult"])[3];
-
-                                var descriptionResult = (string)((List<object>)rowValues["FormatResult"])[4];
-
-                                // Analyze Description and look for key words
-                                Dictionary<string, string> analyzedDescription = analyzeDescription(descriptionResult);
-
-                                // Set pointCheck to null.
-                                rowData.pointCheck = null;
-
-                                // Check if the start and end of a figure was determined.
-                                if (analyzedDescription["beginingFig"] != "None")
-                                {
-                                    rowData.startFig = true;
-                                }
-                                else
-                                {
-                                    rowData.startFig = false;
-                                }
-
-                                if(analyzedDescription["endFig"] != "None")
-                                {
-                                    rowData.endFig = true;
-                                }
-                                else
-                                {
-                                    rowData.endFig = false;
-                                }
-
-                                // Check if the point is the start of the curve
-                                if(analyzedDescription["startCurve"] != "None")
-                                {
-
-                                    rowData.startCurve = true;
-
-                                    // Check for Radius
-                                    if(analyzedDescription["radius"] != "None")
-                                    {
-                                        Match radMatch = Regex.Match(analyzedDescription["radius"], @"\d+\.?\d+?");
-
-                                        //radMatch.Success? rowData.radius = Convert.ToDouble(radMatch.Value) : rowData.radius = 0;
-                                        if (radMatch.Success)
-                                        {
-                                            rowData.radius = Convert.ToDouble(radMatch.Value);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Report Error for Radius
-                                        rowData.pointCheck = false;
-                                        errorMsg += "No Radius found.";
-                                    }
-
-                                    // Check for arc direction
-                                    if (analyzedDescription["arcDirection"].Trim() == "CCW")
-                                    {
-                                        rowData.isCounterClockWise = true;
-                                    }
-                                    else if(analyzedDescription["arcDirection"].Trim() == "CW")
-                                    {
-                                        rowData.isCounterClockWise = false;
-                                    }
-                                    else
-                                    {
-                                        // Report Error for arc direction
-                                        rowData.pointCheck = false;
-                                        errorMsg += " No arc direction found.";
-                                    }
-
-                                    // Check if the start point of an arc contins all the data needed to create an arc
-                                    if ((bool)rowData.pointCheck == false)
-                                    {
-                                        errorMsg += " Include both radius and arc direction to the start of the curve in the description.";
-                                        errorMsg += "\nExample: BC R10.25 CCW";
-                                    }
-                                    else
-                                    {
-                                        // Begining of point on curve description passed.
-                                        rowData.pointCheck = true;
-                                    }
-
-                                }
-                                else
-                                {
-                                    rowData.startCurve = false;
-                                }
-
-                                // Check if the point is the end of the curve
-                                if (analyzedDescription["endCurve"] != "None")
-                                {
-                                    // Check end point description does not contain any begining of the point data
-                                    if (!rowData.startCurve)
-                                    {
-                                        // Ending of a point on curve description passed.
-                                        rowData.pointCheck = true;
-                                        rowData.endCurve = true;
-                                    }
-                                    else
-                                    {
-                                        rowData.pointCheck = false;
-                                        rowData.endCurve = false;
-                                        errorMsg += "Cannot contain BC and EC line code to the same point.";
-                                    }
-                                }
-                                else
-                                {
-                                    rowData.endCurve = false;
-                                }
-
-                                // If pointCheck is null then no other aditional requirment is needed for description
-                                if(rowData.pointCheck is null)
-                                {
-                                    rowData.pointCheck = true;
-                                }
-
-                                // Add error message
-                                rowData.errorMsg = errorMsg;
-
-                                rowCollection.Add(rowData);
-                            }
-                            else
-                            {
-                                RowDataClass rowData = new RowDataClass();
-                                rowData.pointCheck = false;
-
-                                errorMsg += "File is not in the proper format must be in (PENZD)";
-                                rowData.errorMsg = errorMsg;
-                                rowCollection.Add(rowData);
-                            }
+                            // Analyze each index value in description column and store them into a list.
+                            rowCollection.Add(checkKeyDescription(rowValues));
                         }
                     }
                 }
@@ -436,6 +168,150 @@ namespace CrxApp
             }
 
             return analyzedResult;
+        }
+        private static RowDataClass checkKeyDescription(Dictionary<string, object> descriptionValues)
+        {
+            string errorMsg = "";
+
+            if (descriptionValues["FormatCheck"].ToString() == "Pass")
+            {
+                RowDataClass rowData = new RowDataClass();
+                rowData.pointNumber = (int)((List<object>)descriptionValues["FormatResult"])[0];
+                rowData.start_x = (double)((List<object>)descriptionValues["FormatResult"])[1];
+                rowData.start_y = (double)((List<object>)descriptionValues["FormatResult"])[2];
+                rowData.start_z = (double)((List<object>)descriptionValues["FormatResult"])[3];
+
+                var descriptionResult = (string)((List<object>)descriptionValues["FormatResult"])[4];
+
+                // Analyze Description and look for key words
+                Dictionary<string, string> analyzedDescription = analyzeDescription(descriptionResult);
+
+                // Set pointCheck to null.
+                rowData.pointCheck = null;
+
+                // Check if the start and end of a figure was determined.
+                if (analyzedDescription["beginingFig"] != "None")
+                {
+                    rowData.startFig = true;
+                }
+                else
+                {
+                    rowData.startFig = false;
+                }
+
+                if (analyzedDescription["endFig"] != "None")
+                {
+                    rowData.endFig = true;
+                }
+                else
+                {
+                    rowData.endFig = false;
+                }
+
+                // Check if the point is the start of the curve
+                if (analyzedDescription["startCurve"] != "None")
+                {
+
+                    rowData.startCurve = true;
+
+                    // Check for Radius
+                    if (analyzedDescription["radius"] != "None")
+                    {
+                        Match radMatch = Regex.Match(analyzedDescription["radius"], @"\d+\.?\d+?");
+
+                        //radMatch.Success? rowData.radius = Convert.ToDouble(radMatch.Value) : rowData.radius = 0;
+                        if (radMatch.Success)
+                        {
+                            rowData.radius = Convert.ToDouble(radMatch.Value);
+                        }
+                    }
+                    else
+                    {
+                        // Report Error for Radius
+                        rowData.pointCheck = false;
+                        errorMsg += "No Radius found.";
+                    }
+
+                    // Check for arc direction
+                    if (analyzedDescription["arcDirection"].Trim() == "CCW")
+                    {
+                        rowData.isCounterClockWise = true;
+                    }
+                    else if (analyzedDescription["arcDirection"].Trim() == "CW")
+                    {
+                        rowData.isCounterClockWise = false;
+                    }
+                    else
+                    {
+                        // Report Error for arc direction
+                        rowData.pointCheck = false;
+                        errorMsg += " No arc direction found.";
+                    }
+
+                    // Check if the start point of an arc contins all the data needed to create an arc
+                    if ((bool)rowData.pointCheck == false)
+                    {
+                        errorMsg += " Include both radius and arc direction to the start of the curve in the description.";
+                        errorMsg += "\nExample: BC R10.25 CCW";
+                    }
+                    else
+                    {
+                        // Begining of point on curve description passed.
+                        rowData.pointCheck = true;
+                    }
+
+                }
+                else
+                {
+                    rowData.startCurve = false;
+                }
+
+                // Check if the point is the end of the curve
+                if (analyzedDescription["endCurve"] != "None")
+                {
+                    // Check end point description does not contain any begining of the point data
+                    if (!rowData.startCurve)
+                    {
+                        // Ending of a point on curve description passed.
+                        rowData.pointCheck = true;
+                        rowData.endCurve = true;
+                    }
+                    else
+                    {
+                        rowData.pointCheck = false;
+                        rowData.endCurve = false;
+                        errorMsg += "Cannot contain BC and EC line code to the same point.";
+                    }
+                }
+                else
+                {
+                    rowData.endCurve = false;
+                }
+
+                // If pointCheck is null then no other aditional requirment is needed for description
+                if (rowData.pointCheck is null)
+                {
+                    rowData.pointCheck = true;
+                }
+
+                // Add error message
+                rowData.errorMsg = errorMsg;
+
+                //rowCollection.Add(rowData);
+
+                return rowData;
+            }
+            else
+            {
+                RowDataClass rowData = new RowDataClass();
+                rowData.pointCheck = false;
+
+                errorMsg += "File is not in the proper format must be in (PENZD)";
+                rowData.errorMsg = errorMsg;
+                //rowCollection.Add(rowData);
+
+                return rowData;
+            }
         }
     }
 }
