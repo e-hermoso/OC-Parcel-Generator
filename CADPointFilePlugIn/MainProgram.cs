@@ -479,14 +479,57 @@ namespace CrxApp
             var evenValues = figureDict.Where(x => x.Key % 2 == 0).ToList();
             bool falseEndingFigure = evenValues.Any(x => x.Value != "E");
 
-            return false;
+            // If falseStartingFigure and falseEndingFigure are true then
+            // the linecode figures are not in sequential order
+            if(falseStartingFigure || falseEndingFigure)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
         
         // Check if the start and end of the curve are provided in a sequential order.
-        private static bool CheckStartEndCurveSeq()
+        private static bool CheckStartEndCurveSeq(List<RowDataClass> rows)
         {
-            
-            return false;
+            int countCurveLineCode = 0;
+
+            Dictionary<int, string> curveDict = new Dictionary<int, string>();
+
+            foreach (RowDataClass row in rows)
+            {
+                if (row.startFig)
+                {
+                    countCurveLineCode += 1;
+                    curveDict.Add(countCurveLineCode, "B");
+                }
+                else if (row.endFig)
+                {
+                    countCurveLineCode += 1;
+                    curveDict.Add(countCurveLineCode, "E");
+                }
+            }
+
+            // Get all Begining figures "B"
+            var oddValues = curveDict.Where(x => x.Key % 2 != 0).ToList();
+            bool falseStartingFigure = oddValues.Any(x => x.Value != "B");
+
+            // Get all Ending figures "E"
+            var evenValues = curveDict.Where(x => x.Key % 2 == 0).ToList();
+            bool falseEndingFigure = evenValues.Any(x => x.Value != "E");
+
+            // If falseStartingFigure and falseEndingFigure are true then
+            // the linecode figures are not in sequential order
+            if (falseStartingFigure || falseEndingFigure)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
