@@ -89,8 +89,8 @@ namespace CrxApp
                 if (!csvFormatErrorList.Any())
                 {
                     // Analyze the sequence of the point.
-                    CheckLineCodeMatch(rowCollection, "Figures");
-
+                    //CheckLineCodeMatch(rowCollection, "Figures");
+                    CheckRowsLineCodeSeq(rowCollection);
                     using (var writer_1 = File.CreateText("traversedata.json"))
                     {
                         string strResultJson = JsonConvert.SerializeObject(rowCollection, Formatting.Indented);
@@ -352,6 +352,10 @@ namespace CrxApp
         // Check if the sequence of LineCode in the description column are correct.
         private bool CheckRowsLineCodeSeq(List<RowDataClass> rowData)
         {
+
+            // Check if B and E are in sequencial order
+            bool checkFigureSequence = CheckStartEndFigSeq(rowData);
+
             Dictionary<string, object> sequenceResult = new Dictionary<string, object>();
 
             // Check if all the row of points passed.
@@ -394,8 +398,7 @@ namespace CrxApp
                 sequenceResult.Add("CurveCheckResultMsg", "Cannot create curve; start and end curve is not provided.");
             }
 
-            // Check if B and E are in sequencial order
-            bool checkFigureSequence = CheckStartEndFigSeq(rowData);
+
             return false;
         }
         // Check if the linecode for curves, figures, etc... show up evenly.
@@ -448,8 +451,33 @@ namespace CrxApp
         }
 
         // Check if the start and end figure are provided in a sequential order.
-        private static bool CheckStartEndFigSeq(List<RowDataClass> rowData)
+        private static bool CheckStartEndFigSeq(List<RowDataClass> rows)
         {
+            int countFigs = 0;
+
+            Dictionary<int, string> figureDict = new Dictionary<int, string>();
+            
+            foreach(RowDataClass  row in rows)
+            {
+                if (row.startFig)
+                {
+                    countFigs += 1;
+                    figureDict.Add(countFigs, "B");
+                }
+                else if (row.endFig)
+                {
+                    countFigs += 1;
+                    figureDict.Add(countFigs, "E");
+                }
+            }
+
+            // Get all Begining figures "B"
+            var oddValues = figureDict.Where(x => x.Key % 2 != 0).ToList();
+            bool falseStartingFigure = oddValues.Any(x => x.Value != "B");
+
+            // Get all Ending figures "E"
+            var evenValues = figureDict.Where(x => x.Key % 2 == 0).ToList();
+            bool falseEndingFigure = evenValues.Any(x => x.Value != "E");
 
             return false;
         }
