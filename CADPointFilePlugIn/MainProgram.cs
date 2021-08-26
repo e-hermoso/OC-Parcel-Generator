@@ -23,6 +23,14 @@ namespace CrxApp
     class MainProgram
     {
         [CommandMethod("AMPARCEL")]
+        public void CreaeParcel()
+        {
+            // Read input parameters from JSON file
+            List<RowDataClass> inputParams = JsonConvert.DeserializeObject<List<RowDataClass>>(File.ReadAllText("traversedata-test.json"));
+
+
+            System.Diagnostics.Debug.WriteLine("This is a log");
+        }
         public void ReadCSVFile()
         {
             using(var reader = new StreamReader("AlisoCreekDownStreamBoundary2020-2.txt"))
@@ -89,19 +97,41 @@ namespace CrxApp
                 if (!csvFormatErrorList.Any())
                 {
                     // Analyze the sequence of the point.
-                    //CheckLineCodeMatch(rowCollection, "Figures");
-                    CheckRowsLineCodeSeq(rowCollection);
-                    using (var writer_1 = File.CreateText("traversedata.json"))
+                    Dictionary<string,object> seqLineCodeResult = CheckRowsLineCodeSeq(rowCollection);
+
+                    if((string)seqLineCodeResult["LineCodeFinalResult"] == "Pass")
                     {
-                        string strResultJson = JsonConvert.SerializeObject(rowCollection, Formatting.Indented);
-                        writer_1.WriteLine(strResultJson);
+                        Dictionary<string, object> reportResults = new Dictionary<string, object>();
+                        reportResults.Add("ParcelCreator", "Pass");
+                        reportResults.Add("ErrorType", "None");
+                        reportResults.Add("ErrorTypeMsg", "None");
+                        reportResults.Add("Result", seqLineCodeResult);
+                        reportResults.Add("RowData", rowCollection);
+
+                        using (var writer_1 = File.CreateText("traversedata.json"))
+                        {
+
+                            string strResultJson = JsonConvert.SerializeObject(rowCollection, Formatting.Indented);
+                            writer_1.WriteLine(strResultJson);
+                        }
                     }
+                    else
+                    {
+                        Dictionary<string, object> reportResults = new Dictionary<string, object>();
+                        reportResults.Add("ParcelCreator", "Fail");
+                        reportResults.Add("ErrorType", "Sequence");
+                        reportResults.Add("ErrorTypeMsg", "LineCode Sequence Error");
+                        reportResults.Add("Result", seqLineCodeResult);
+                    }
+
                 }
                 else
                 {
                     Dictionary<string, object> reportResults = new Dictionary<string, object>();
                     reportResults.Add("ParcelCreator", "Fail");
-                    reportResults.Add("ErrorResult", csvFormatErrorList);
+                    reportResults.Add("ErrorType", "Format");
+                    reportResults.Add("ErrorTypeMsg", "CSV Format Error");
+                    reportResults.Add("Result", csvFormatErrorList);
                 }
             }
         }
@@ -350,11 +380,8 @@ namespace CrxApp
             }
         }
         // Check if the sequence of LineCode in the description column are correct.
-        private bool CheckRowsLineCodeSeq(List<RowDataClass> rowData)
+        private Dictionary<string, object> CheckRowsLineCodeSeq(List<RowDataClass> rowData)
         {
-
-            // Check if B and E are in sequencial order
-            bool checkFigureSequence = CheckStartEndFigSeq(rowData);
 
             Dictionary<string, object> sequenceResult = new Dictionary<string, object>();
 
@@ -372,7 +399,7 @@ namespace CrxApp
                 
             }
 
-            // Check if linecode B and E show up the same number of times
+            // Check if linecode B and E show up the same number of times.
             bool checkNumberOfFigures = CheckLineCodeMatch(rowData, "Figures");
             if (checkNumberOfFigures)
             {
@@ -385,7 +412,7 @@ namespace CrxApp
                 sequenceResult.Add("FigureCheckResultMsg", "Figures are not closed.");
             }
 
-            // Check if BC and EC show up the same number of times
+            // Check if BC and EC show up the same number of times.
             bool checkNumberOfCurves = CheckLineCodeMatch(rowData, "Arc");
             if (checkNumberOfCurves)
             {
@@ -398,8 +425,44 @@ namespace CrxApp
                 sequenceResult.Add("CurveCheckResultMsg", "Cannot create curve; start and end curve is not provided.");
             }
 
+            // Check if B and E are in sequencial order.
+            bool checkFigureSequence = CheckStartEndFigSeq(rowData);
+            if (checkFigureSequence)
+            {
+                sequenceResult.Add("FigCheckSeq", "Pass");
+                sequenceResult.Add("FigCheckSeqMsg", "the linecode for figures are in the correct sequence.");
+            }
+            else
+            {
+                sequenceResult.Add("FigCheckSeq", "Fail");
+                sequenceResult.Add("FigCheckSeqMsg", "the linecode for figures are not in the correct sequence.");
+            }
 
-            return false;
+            // Check if BC and EC are in sequencial order.
+            bool checkCurveSequence = CheckStartEndCurveSeq(rowData);
+            if (checkCurveSequence)
+            {
+                sequenceResult.Add("CurveCheckSeq", "Pass");
+                sequenceResult.Add("CurveCheckSeqMsg", "the linecode for curves are in the correct sequence.");
+            }
+            else
+            {
+                sequenceResult.Add("CurveCheckSeq", "Fail");
+                sequenceResult.Add("CurveCheckSeqMsg", "the linecode for curves are not in the correct sequence.");
+            }
+
+            // Check if all the sequential conditions passed.
+            var finalResult = sequenceResult.Where(x => (string)x.Value == "Fail").ToList().Any();
+            if (!finalResult)
+            {
+                sequenceResult.Add("LineCodeFinalResult", "Pass");
+            }
+            else
+            {
+                sequenceResult.Add("LineCodeFinalResult", "Fail");
+            }
+
+            return sequenceResult;
         }
         // Check if the linecode for curves, figures, etc... show up evenly.
         // Figure out a better alternative for this mehtod.(TBD)
@@ -500,29 +563,29 @@ namespace CrxApp
 
             foreach (RowDataClass row in rows)
             {
-                if (row.startFig)
+                if (row.startCurve)
                 {
                     countCurveLineCode += 1;
-                    curveDict.Add(countCurveLineCode, "B");
+                    curveDict.Add(countCurveLineCode, "BC");
                 }
-                else if (row.endFig)
+                else if (row.endCurve)
                 {
                     countCurveLineCode += 1;
-                    curveDict.Add(countCurveLineCode, "E");
+                    curveDict.Add(countCurveLineCode, "EC");
                 }
             }
 
             // Get all Begining figures "B"
             var oddValues = curveDict.Where(x => x.Key % 2 != 0).ToList();
-            bool falseStartingFigure = oddValues.Any(x => x.Value != "B");
+            bool falseStartingCurve = oddValues.Any(x => x.Value != "BC");
 
             // Get all Ending figures "E"
             var evenValues = curveDict.Where(x => x.Key % 2 == 0).ToList();
-            bool falseEndingFigure = evenValues.Any(x => x.Value != "E");
+            bool falseEndingCurve = evenValues.Any(x => x.Value != "EC");
 
             // If falseStartingFigure and falseEndingFigure are true then
             // the linecode figures are not in sequential order
-            if (falseStartingFigure || falseEndingFigure)
+            if (falseStartingCurve || falseEndingCurve)
             {
                 return false;
             }
@@ -530,6 +593,11 @@ namespace CrxApp
             {
                 return true;
             }
+        }
+        public class InputParams
+        {
+            public string TextFile { get; set; }
+            public string OutputDWG { get; set; }
         }
     }
 }

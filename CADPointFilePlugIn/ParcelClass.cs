@@ -67,8 +67,4 @@ namespace ParcelCreation
         public object pointCheck { get; set; }
         public string errorMsg { get; set; }
     }
-    public class ParcelClass
-    {
-
-    }
 }
