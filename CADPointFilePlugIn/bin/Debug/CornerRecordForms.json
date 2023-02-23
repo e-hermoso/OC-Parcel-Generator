@@ -1,0 +1,221 @@
+{
+  "CogoPoint_check": {
+    "CogoPoint_check_status": "Pass",
+    "Extra_CogoPoint": "None"
+  },
+  "Layout_check": {
+    "Check_duplicate_name_in_Points": "Pass",
+    "Check_duplicate_name_in_Layout": "Pass",
+    "Layout_check_status": "Pass",
+    "Extra_Layouts": "None"
+  },
+  "Form_Check": [
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    },
+    {
+      "Form_Check_Status": "Pass",
+      "Form_In_Layout_Error": "None",
+      "Form_Att_Values_Error": "None"
+    }
+  ],
+  "Form_Result": {
+    "cr12": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.992514742283",
+      "Geolocation_Latitude_s": "33.8623780344519"
+    },
+    "cr1": {
+      "DATE_OF_SURVEY_c": "TEST DATE OF SURVEY",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "LEGAL DESCRIPTION FOR CR1 TEST 2ND ROW FITMENT",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.992514363907",
+      "Geolocation_Latitude_s": "33.8623778940664"
+    },
+    "cr10": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.993049551318",
+      "Geolocation_Latitude_s": "33.8616570196291"
+    },
+    "cr11": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.992810525424",
+      "Geolocation_Latitude_s": "33.8621057885442"
+    },
+    "cr2": {
+      "DATE_OF_SURVEY_c": "10-23-2020",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "LEGAL DESCRIPTION TEST FOR CR2 2ND ROW",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.99305831336",
+      "Geolocation_Latitude_s": "33.8616635428767"
+    },
+    "cr3": {
+      "DATE_OF_SURVEY_c": "10-23-2020",
+      "CRCity_c": "UNICORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "LEGAL DESCRIPTION FOR CR3 LINE 2 OF LEGAL DESCRIPTION FOR CR3",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.992809999952",
+      "Geolocation_Latitude_s": "33.8621058700772"
+    },
+    "cr4": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.992518027662",
+      "Geolocation_Latitude_s": "33.8623751166406"
+    },
+    "cr5": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.992511512418",
+      "Geolocation_Latitude_s": "33.8623812565535"
+    },
+    "cr6": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.99280668743",
+      "Geolocation_Latitude_s": "33.86210891195"
+    },
+    "cr7": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.993038902534",
+      "Geolocation_Latitude_s": "33.8616668175358"
+    },
+    "cr8": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.995920454116",
+      "Geolocation_Latitude_s": "33.861333885427"
+    },
+    "cr9": {
+      "DATE_OF_SURVEY_c": "DECEMBER 28, 2019",
+      "CRCity_c": "UNINCORPORATED TERRITORY",
+      "Corner_Type_c": "Lot",
+      "Legal_Description_c": "FROM THE INT. OF BEACH BL. & 11TH ST., +/- 790' SE'LY ALONGLEGAL DESCRIPTION FULLERTON CREEK CHANNEL (A03)",
+      "Corner_Type": "Other",
+      "PLS_Act_Ref": "8771",
+      "PrePost_Type": "Pre-Construction",
+      "Other_Monument_Type": "Referenced",
+      "Geolocation_Longitude_s": "-117.995714188341",
+      "Geolocation_Latitude_s": "33.8616995134857"
+    }
+  },
+  "Submission_Report": "Submitted Cad File Analyzed: Success \n\nCOGO Point Name Check: Pass \n\nLayout Name Check: Pass \n\nCorner Record Form: Pass "
+}
